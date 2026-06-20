@@ -1,27 +1,28 @@
 export const characterConfig = {
   model: "/models/avatar.glb",
-  /** Base avatar height in the 3D scene (lower = smaller at rest) */
-  targetHeight: 1.05,
+  /** Sized to fill hero frame at scroll start */
+  targetHeight: 1.42,
   scroll: {
-    /** Scroll range where zoom kicks in (0–1 of hero pin progress) */
-    zoomStart: 0.12,
+    zoomStart: 0,
     zoomEnd: 1,
-    /** Avatar 3D scale at scroll start → end (hard cap on max size) */
+    /** 3D mesh scale stays fixed; only camera moves on scroll */
     scaleMin: 1,
-    scaleMax: 1.22,
+    scaleMax: 1,
     containerScaleMin: 1,
-    containerScaleMax: 1.1,
-    /** Camera pulls in on scroll */
-    cameraZStart: 5.9,
-    cameraZEnd: 4.05,
-    cameraY: 0.72,
-    lookAtY: 0.48,
-    liftY: 0.12,
-    rotateY: 0.55,
+    containerScaleMax: 1,
+    /** Subtle push-in — ~6% closer at full scroll */
+    cameraZStart: 5.15,
+    cameraZEnd: 4.85,
+    cameraY: 0.6,
+    lookAtY: 0.36,
+    liftY: 0.012,
+    rotateY: 0.1,
+    floatAmplitude: 0.006,
+    floatSpeed: 0.95,
+    breatheAmplitude: 0.004,
   },
 } as const;
 
-/** Maps raw scroll progress (0–1) to eased zoom progress (0–1), capped at scaleMax */
 export function getScrollZoomProgress(raw: number): number {
   const { zoomStart, zoomEnd } = characterConfig.scroll;
   const t = Math.min(1, Math.max(0, (raw - zoomStart) / (zoomEnd - zoomStart)));

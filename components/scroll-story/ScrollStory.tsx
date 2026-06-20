@@ -54,11 +54,11 @@ export default function ScrollStory() {
   );
 
   return (
-    <section id="expertise" ref={ref} className="py-20 md:py-28 md:pl-[38%] lg:pl-[36%]">
+    <section id="expertise" ref={ref} className="py-20 md:py-28">
       <div className="section-wrap">
         <div className="section-header-wrap">
           <SectionHeader
-            index="02 — Expertise"
+            index="03 — Expertise"
             title="Engineering principles"
             description="Four foundations behind every system I architect and ship."
             className="section-reveal invisible"

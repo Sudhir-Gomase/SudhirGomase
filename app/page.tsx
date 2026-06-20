@@ -1,6 +1,7 @@
 import Hero from "@/components/hero/Hero";
 import About from "@/components/hero/About";
 import SkillFocus from "@/components/hero/SkillFocus";
+import Journey from "@/components/journey/Journey";
 import ScrollStory from "@/components/scroll-story/ScrollStory";
 import ProjectsSection from "@/components/projects/Projects";
 import Contact from "@/components/contact/Contact";
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero />
       <SkillFocus />
       <About />
+      <Journey />
       <ScrollStory />
       <div className="section-muted">
         <ProjectsSection />

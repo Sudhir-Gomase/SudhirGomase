@@ -8,6 +8,7 @@ import { siteConfig } from "@/lib/data";
 
 const sectionLinks = [
   { href: "#about", label: "About" },
+  { href: "#journey", label: "Journey" },
   { href: "#expertise", label: "Expertise" },
   { href: "#projects", label: "Work" },
   { href: "#contact", label: "Contact" },
@@ -30,14 +31,14 @@ export default function Navbar() {
         transition={{ duration: 0.6 }}
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "border-b border-line bg-surface/90 shadow-soft backdrop-blur-xl dark:bg-[#0c0e16]/92"
+            ? "border-b border-line bg-surface/85 shadow-soft backdrop-blur-2xl dark:bg-[#0a0a10]/90"
             : "bg-transparent"
         }`}
       >
-        <nav className="section-wrap flex h-[68px] items-center justify-between gap-6 lg:h-[76px]">
+        <nav className="section-wrap flex h-[var(--nav-h)] items-center justify-between gap-4 sm:gap-6">
           <Link
             href="/"
-            className="shrink-0 font-display text-[1.15rem] tracking-tight md:text-[1.25rem]"
+            className="shrink-0 font-display text-[1.1rem] font-semibold tracking-tight md:text-[1.2rem]"
           >
             <span className="text-ink-heading">Sudhir </span>
             <span className="text-brand-dark dark:text-brand">Gomase</span>
@@ -49,7 +50,7 @@ export default function Navbar() {
                 <a
                   href={link.href}
                   data-cursor="hover"
-                  className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-faint transition-colors hover:text-brand-dark dark:hover:text-brand"
+                  className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-faint transition-colors hover:text-brand"
                 >
                   {link.label}
                 </a>
@@ -59,7 +60,7 @@ export default function Navbar() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a
-              href={siteConfig.resume}
+              href={siteConfig.cv}
               download
               data-cursor="hover"
               className="flex items-center gap-1.5 rounded-full border border-brand/25 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-brand-dark transition-all hover:border-brand/50 hover:bg-brand/5 dark:text-brand"
@@ -67,7 +68,7 @@ export default function Navbar() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Resume
+              CV
             </a>
 
             <a
@@ -82,7 +83,7 @@ export default function Navbar() {
             <a
               href="#contact"
               data-cursor="hover"
-              className="rounded-full bg-navy px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-white transition-all hover:bg-navy-dark dark:bg-brand dark:text-[#0c0e16] dark:hover:bg-brand-light"
+              className="rounded-full bg-ink-heading px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] text-canvas transition-all hover:shadow-glow dark:bg-brand dark:text-navy-dark dark:hover:bg-brand-light"
             >
               Contact
             </a>
@@ -108,7 +109,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="fixed inset-x-0 top-[68px] z-[49] border-b border-line bg-surface px-5 py-5 shadow-elevated backdrop-blur-xl dark:bg-[#0c0e16] lg:top-[76px] md:hidden"
+            className="fixed inset-x-0 top-[var(--nav-h)] z-[49] border-b border-line bg-surface px-5 py-5 shadow-elevated backdrop-blur-xl dark:bg-[#0c0e16] md:hidden"
           >
             <div className="section-wrap flex flex-col gap-4">
               {sectionLinks.map((link) => (
@@ -122,8 +123,8 @@ export default function Navbar() {
                 </a>
               ))}
               <hr className="border-line" />
-              <a href={siteConfig.resume} download className="text-sm font-medium text-brand-dark dark:text-brand">
-                Download Resume
+              <a href={siteConfig.cv} download className="text-sm font-medium text-brand-dark dark:text-brand">
+                Download CV
               </a>
               <a href={`tel:${siteConfig.phone.replace(/\s/g, "")}`} className="text-sm text-ink-muted">
                 {siteConfig.phone}

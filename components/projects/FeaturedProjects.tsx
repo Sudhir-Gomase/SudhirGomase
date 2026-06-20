@@ -89,7 +89,9 @@ function FeaturedProject({ project, index }: { project: Project; index: number }
   return (
     <article ref={ref} className="surface-card overflow-hidden invisible">
       <div className={`grid grid-cols-1 gap-0 lg:grid-cols-2 ${reversed ? "lg:[direction:rtl]" : ""}`}>
-        <div className={`p-8 md:p-10 lg:[direction:ltr] ${reversed ? "lg:order-2" : ""}`}>
+        <div
+          className={`order-2 p-5 sm:p-7 md:p-8 lg:order-none lg:p-10 lg:[direction:ltr] ${reversed ? "lg:order-2" : ""}`}
+        >
           <span className="project-reveal label-caps text-brand-dark dark:text-brand">
             {String(index + 1).padStart(2, "0")}
           </span>
@@ -98,7 +100,7 @@ function FeaturedProject({ project, index }: { project: Project; index: number }
             <span className="text-xs text-ink-faint">{project.role}</span>
           </div>
 
-          <h3 className="project-reveal font-display text-2xl text-ink-heading md:text-3xl">
+          <h3 className="project-reveal font-display text-xl text-ink-heading sm:text-2xl md:text-3xl">
             {project.title}
           </h3>
           {project.subtitle && (
@@ -146,12 +148,14 @@ function FeaturedProject({ project, index }: { project: Project; index: number }
           )}
         </div>
 
-        <div className={`border-line bg-canvas-muted/50 p-6 md:p-8 lg:[direction:ltr] ${reversed ? "lg:border-r lg:order-1" : "lg:border-l"}`}>
-          <div className="project-reveal">
+        <div
+          className={`order-1 flex flex-col border-t border-line bg-canvas-muted/50 p-5 sm:p-6 md:p-8 lg:order-none lg:border-t-0 lg:[direction:ltr] ${reversed ? "lg:border-r lg:order-1" : "lg:border-l"}`}
+        >
+          <div className="project-reveal flex-1">
             <ProjectPreview project={project} />
           </div>
           {project.frontend && project.backend && (
-            <div className="project-reveal mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="project-reveal mt-4 grid grid-cols-1 gap-3 sm:mt-5 lg:grid-cols-2">
               <StackBlock title="Frontend" stack={project.frontend.stack} modules={project.frontend.modules.slice(0, 3)} />
               <StackBlock title="Backend" stack={project.backend.stack} modules={project.backend.modules.slice(0, 3)} />
             </div>

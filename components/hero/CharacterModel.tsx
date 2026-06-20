@@ -7,6 +7,13 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { characterScroll } from "@/lib/characterScroll";
 import { characterConfig, getScrollZoomProgress } from "@/lib/characterConfig";
+import {
+  applyArmGesture,
+  computeGesture,
+  findArmBones,
+  pickClips,
+  storeBoneRest,
+} from "@/lib/modelAnimation";
 
 const { scroll: scrollCfg } = characterConfig;
 
@@ -38,14 +45,13 @@ function ScrollCamera() {
   const smoothY = useRef<number>(scrollCfg.cameraY);
 
   useFrame((_, delta) => {
-    const zoom =
-      characterScroll.sectionIndex === 0
-        ? getScrollZoomProgress(characterScroll.progress)
-        : characterScroll.progress * 0.25;
+    if (!characterScroll.visible || characterScroll.sectionIndex < 0) return;
+
+    const zoom = getScrollZoomProgress(characterScroll.progress);
 
     const targetZ = THREE.MathUtils.lerp(scrollCfg.cameraZStart, scrollCfg.cameraZEnd, zoom);
-    const targetY = scrollCfg.cameraY + zoom * 0.06;
-    const smooth = 1 - Math.pow(0.001, delta);
+    const targetY = scrollCfg.cameraY + zoom * 0.05;
+    const smooth = 1 - Math.exp(-14 * delta);
 
     smoothZ.current = THREE.MathUtils.lerp(smoothZ.current, targetZ, smooth);
     smoothY.current = THREE.MathUtils.lerp(smoothY.current, targetY, smooth);
@@ -75,8 +81,21 @@ function ProceduralFigure() {
 
 export default function CharacterModel() {
   const root = useRef<THREE.Group>(null);
+  const gestureGroup = useRef<THREE.Group>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
+  const waveAction = useRef<THREE.AnimationAction | null>(null);
+  const idleAction = useRef<THREE.AnimationAction | null>(null);
+  const armRest = useRef<ReturnType<typeof storeBoneRest>>([]);
+  const hasRig = useRef(false);
+  const waveTimer = useRef(0);
   const [gltfModel, setGltfModel] = useState<THREE.Group | null>(null);
+
+  const smoothRotY = useRef(0);
+  const smoothPosY = useRef(0);
+  const smoothPosZ = useRef(0);
+  const smoothScale = useRef(1);
+  const gestureRotY = useRef(0);
+  const gestureRotZ = useRef(0);
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -97,12 +116,36 @@ export default function CharacterModel() {
           }
         });
 
-        if (gltf.animations.length > 0) {
+        const bones: THREE.Bone[] = [];
+        model.traverse((child) => {
+          if (child instanceof THREE.Bone) bones.push(child);
+        });
+
+        hasRig.current = bones.length > 0;
+
+        if (hasRig.current) {
+          const rightArm = findArmBones(model, "right");
+          const armBones = [rightArm.upperArm, rightArm.foreArm, rightArm.hand].filter(
+            Boolean
+          ) as THREE.Bone[];
+          armRest.current = storeBoneRest(armBones);
+
+          const { wave, idle } = pickClips(gltf.animations);
           const animationMixer = new THREE.AnimationMixer(model);
-          const clip =
-            gltf.animations.find((a) => /idle|stand|breath/i.test(a.name)) ??
-            gltf.animations[0];
-          animationMixer.clipAction(clip).play();
+
+          if (idle) {
+            const action = animationMixer.clipAction(idle);
+            action.play();
+            idleAction.current = action;
+          }
+
+          if (wave) {
+            const action = animationMixer.clipAction(wave);
+            action.setLoop(THREE.LoopRepeat, Infinity);
+            action.clampWhenFinished = true;
+            waveAction.current = action;
+          }
+
           mixer.current = animationMixer;
         }
 
@@ -121,45 +164,89 @@ export default function CharacterModel() {
     };
   }, []);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
+    if (!characterScroll.visible || characterScroll.sectionIndex < 0) return;
+
     mixer.current?.update(delta);
 
-    if (!root.current) return;
+    if (!root.current || !gestureGroup.current) return;
 
-    const zoom =
-      characterScroll.sectionIndex === 0
-        ? getScrollZoomProgress(characterScroll.progress)
-        : characterScroll.progress * 0.25;
+    const elapsed = state.clock.elapsedTime;
+    const gesture = computeGesture(elapsed, hasRig.current);
 
-    const faceBase = characterScroll.side === "right" ? -0.35 : 0.35;
+    if (hasRig.current && armRest.current.length > 0) {
+      applyArmGesture(armRest.current, gesture, "right");
+
+      if (waveAction.current && idleAction.current) {
+        waveTimer.current += delta;
+        const cycleT = waveTimer.current % 9;
+        const waving = cycleT < 2.2;
+
+        if (waving && !waveAction.current.isRunning()) {
+          idleAction.current.fadeOut(0.35);
+          waveAction.current.reset().fadeIn(0.35).play();
+        } else if (!waving && waveAction.current.isRunning()) {
+          waveAction.current.fadeOut(0.45);
+          idleAction.current.reset().fadeIn(0.45).play();
+        }
+      }
+    }
+
+    gestureRotY.current = THREE.MathUtils.lerp(gestureRotY.current, gesture.bodyRotY, 0.12);
+    gestureRotZ.current = THREE.MathUtils.lerp(gestureRotZ.current, gesture.bodyRotZ, 0.12);
+    gestureGroup.current.rotation.y = gestureRotY.current;
+    gestureGroup.current.rotation.z = gestureRotZ.current;
+    gestureGroup.current.position.y = gesture.bodyLift;
+
+    const zoom = getScrollZoomProgress(characterScroll.progress);
+
+    const faceBase = characterScroll.side === "right" ? -0.32 : 0.32;
     const rotateDir = characterScroll.side === "right" ? 1 : -1;
-    const smooth = 1 - Math.pow(0.001, delta);
+    const smooth = 1 - Math.exp(-16 * delta);
+
+    const floatY =
+      Math.sin(elapsed * scrollCfg.floatSpeed) * scrollCfg.floatAmplitude;
+    const breathe =
+      1 + Math.sin(elapsed * 0.85) * scrollCfg.breatheAmplitude;
 
     const targetRotY = faceBase + rotateDir * zoom * scrollCfg.rotateY;
-    const targetY = -0.05 + zoom * scrollCfg.liftY;
-    const targetZ = zoom * 0.18;
-    const targetScale = THREE.MathUtils.lerp(scrollCfg.scaleMin, scrollCfg.scaleMax, zoom);
+    const targetY = zoom * scrollCfg.liftY + floatY;
+    const targetZ = zoom * 0.02;
+    const targetScale =
+      THREE.MathUtils.lerp(scrollCfg.scaleMin, scrollCfg.scaleMax, zoom) * breathe;
 
-    root.current.rotation.y = THREE.MathUtils.lerp(root.current.rotation.y, targetRotY, smooth);
-    root.current.position.y = THREE.MathUtils.lerp(root.current.position.y, targetY, smooth);
-    root.current.position.z = THREE.MathUtils.lerp(root.current.position.z, targetZ, smooth);
-    root.current.scale.setScalar(
-      THREE.MathUtils.lerp(root.current.scale.x, targetScale, smooth)
-    );
+    smoothRotY.current = THREE.MathUtils.lerp(smoothRotY.current, targetRotY, smooth);
+    smoothPosY.current = THREE.MathUtils.lerp(smoothPosY.current, targetY, smooth);
+    smoothPosZ.current = THREE.MathUtils.lerp(smoothPosZ.current, targetZ, smooth);
+    smoothScale.current = THREE.MathUtils.lerp(smoothScale.current, targetScale, smooth);
+
+    root.current.rotation.y = smoothRotY.current;
+    root.current.position.y = smoothPosY.current;
+    root.current.position.z = smoothPosZ.current;
+    root.current.scale.setScalar(smoothScale.current);
   });
 
   return (
     <>
       <ScrollCamera />
-      <ambientLight intensity={1.15} />
-      <directionalLight position={[5, 8, 5]} intensity={1.55} castShadow />
-      <directionalLight position={[-4, 3, -2]} intensity={0.5} color="#C4A052" />
+      <ambientLight intensity={1.1} />
+      <directionalLight position={[4, 7, 5]} intensity={1.45} castShadow />
+      <directionalLight position={[-3, 4, -2]} intensity={0.45} color="#C4A052" />
+      <pointLight position={[2, 2, 3]} intensity={0.35} color="#fff8ee" />
 
-      <group ref={root} position={[0, -0.15, 0]}>
-        {gltfModel ? <primitive object={gltfModel} /> : <ProceduralFigure />}
+      <group ref={root}>
+        <group ref={gestureGroup}>
+          {gltfModel ? <primitive object={gltfModel} /> : <ProceduralFigure />}
+        </group>
       </group>
 
-      <ContactShadows position={[0, -0.2, 0]} opacity={0.38} scale={2.2} blur={2.5} far={1.2} />
+      <ContactShadows
+        position={[0, -0.02, 0]}
+        opacity={0.32}
+        scale={2}
+        blur={2.2}
+        far={1}
+      />
     </>
   );
 }

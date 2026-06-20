@@ -8,9 +8,12 @@ export default function Footer() {
       <div className="section-wrap flex flex-col items-center justify-between gap-6 md:flex-row">
         <div>
           <p className="font-display text-xl text-white">
-            Sudhir <span className="text-brand">Gomase</span>
+            {siteConfig.name.split(" ")[0]}{" "}
+            <span className="text-brand">{siteConfig.name.split(" ").slice(1).join(" ")}</span>
           </p>
-          <p className="mt-1 text-sm">Backend Developer · Mumbai, India</p>
+          <p className="mt-1 text-sm">
+            Backend Developer · {siteConfig.location}
+          </p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 text-sm md:gap-8">

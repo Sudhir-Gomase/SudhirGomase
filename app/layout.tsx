@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import GsapProvider from "@/components/gsap/GsapProvider";
 import GameCursor from "@/components/layout/GameCursor";
@@ -10,17 +10,17 @@ import ThemeProvider from "@/components/layout/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import { siteConfig } from "@/lib/data";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-inter",
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-instrument-serif",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-source-serif",
   display: "swap",
 });
 
@@ -34,17 +34,25 @@ export const metadata: Metadata = {
   title: siteConfig.title,
   description: siteConfig.description,
   authors: [{ name: siteConfig.name }],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://sudhirgomase.dev"),
   openGraph: {
     title: siteConfig.title,
     description: siteConfig.description,
     type: "website",
+    locale: "en_IN",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAFAFA" },
-    { media: "(prefers-color-scheme: dark)", color: "#08090F" },
+    { media: "(prefers-color-scheme: light)", color: "#F7F4EE" },
+    { media: "(prefers-color-scheme: dark)", color: "#050508" },
   ],
 };
 
@@ -68,7 +76,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plusJakarta.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -78,6 +86,7 @@ export default function RootLayout({
           <GsapProvider>
             <SmoothScrollProvider>
               <div className="grain-overlay" aria-hidden="true" />
+              <div className="premium-vignette pointer-events-none fixed inset-0 z-[9997]" aria-hidden />
               <GameCursor />
               <CharacterCompanion />
               <ScrollProgressBar />

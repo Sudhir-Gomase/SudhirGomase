@@ -35,7 +35,7 @@ export default function About() {
   );
 
   return (
-    <section id="about" ref={ref} className="border-y border-line py-20 md:py-28 md:pr-[38%] lg:pr-[36%]">
+    <section id="about" ref={ref} className="border-y border-line py-20 md:py-28">
       <div className="section-wrap">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
@@ -85,12 +85,12 @@ export default function About() {
                 LinkedIn
               </a>
               <a
-                href={siteConfig.resume}
+                href={siteConfig.cv}
                 download
                 data-cursor="hover"
                 className="rounded-full border border-brand/30 bg-brand/5 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-brand-dark transition-colors hover:bg-brand/10 dark:text-brand"
               >
-                Download resume
+                Download CV
               </a>
             </div>
           </div>

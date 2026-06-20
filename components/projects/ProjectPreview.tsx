@@ -1,20 +1,73 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
 import type { Project } from "@/lib/data";
 
-const PREVIEW_WIDTH = 480;
-const PREVIEW_HEIGHT = 300;
-const THUMB_WIDTH = 72;
+const AUTO_INTERVAL_MS = 4500;
+
+function ScreenshotImage({ src, alt }: { src: string; alt: string }) {
+  const [aspect, setAspect] = useState<number | null>(null);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => {
+      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+        setAspect(img.naturalWidth / img.naturalHeight);
+      }
+    };
+    img.src = src;
+  }, [src]);
+
+  const isPortrait = aspect !== null && aspect < 0.85;
+
+  return (
+    <div
+      className="flex w-full items-center justify-center bg-[#eef1f5] px-1 py-2 dark:bg-[#141622] sm:px-2 sm:py-3"
+      style={
+        aspect
+          ? {
+              aspectRatio: `${aspect}`,
+              maxHeight: isPortrait ? "min(72vh, 560px)" : "min(52vh, 480px)",
+            }
+          : { minHeight: "220px", aspectRatio: "16 / 10" }
+      }
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        draggable={false}
+        className="h-full w-full select-none object-contain object-center"
+      />
+    </div>
+  );
+}
 
 export default function ProjectPreview({ project }: { project: Project }) {
   const shots = project.screenshots ?? [];
   const [active, setActive] = useState(0);
-  const stripRef = useRef<HTMLDivElement>(null);
+  const [paused, setPaused] = useState(false);
+
+  const goTo = useCallback(
+    (index: number) => {
+      if (shots.length === 0) return;
+      setActive((index + shots.length) % shots.length);
+    },
+    [shots.length]
+  );
+
+  const next = useCallback(() => goTo(active + 1), [active, goTo]);
+
+  useEffect(() => {
+    if (shots.length <= 1 || paused) return;
+    const id = window.setInterval(next, AUTO_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [shots.length, paused, next]);
 
   if (shots.length === 0) {
     return (
-      <div className="flex aspect-video w-full items-center justify-center rounded-xl border border-line bg-canvas-muted">
+      <div className="flex min-h-[200px] w-full items-center justify-center rounded-xl border border-line bg-canvas-muted sm:min-h-[260px]">
         <span className="text-sm text-ink-faint">{project.title}</span>
       </div>
     );
@@ -22,55 +75,78 @@ export default function ProjectPreview({ project }: { project: Project }) {
 
   const current = shots[active];
 
-  const scrollToThumb = (index: number) => {
-    setActive(index);
-    const strip = stripRef.current;
-    const thumb = strip?.children[index] as HTMLElement | undefined;
-    thumb?.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
-  };
-
   return (
-    <div className="mx-auto w-full max-w-[500px]">
-      <div className="overflow-hidden rounded-xl border border-line bg-[#eef1f5] shadow-soft dark:bg-[#1a1d28]">
-        <div
-          className="screenshot-viewport overflow-auto"
-          style={{ height: PREVIEW_HEIGHT, maxWidth: PREVIEW_WIDTH, margin: "0 auto" }}
-        >
-          <div className="inline-flex min-w-full justify-center p-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+    <div
+      className="w-full"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div className="overflow-hidden rounded-xl border border-line shadow-soft">
+        <div className="relative w-full overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
               key={current.src}
-              src={current.src}
-              alt={current.caption}
-              draggable={false}
-              className="block h-auto shrink-0 select-none"
-              style={{ width: PREVIEW_WIDTH }}
-            />
-          </div>
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ScreenshotImage src={current.src} alt={current.caption} />
+            </motion.div>
+          </AnimatePresence>
+
+          {shots.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() => goTo(active - 1)}
+                data-cursor="hover"
+                aria-label="Previous screenshot"
+                className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface/95 text-lg text-ink-muted shadow-soft backdrop-blur-sm transition-colors hover:text-ink-heading sm:left-3 sm:h-10 sm:w-10"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo(active + 1)}
+                data-cursor="hover"
+                aria-label="Next screenshot"
+                className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface/95 text-lg text-ink-muted shadow-soft backdrop-blur-sm transition-colors hover:text-ink-heading sm:right-3 sm:h-10 sm:w-10"
+              >
+                ›
+              </button>
+            </>
+          )}
         </div>
-        <div className="border-t border-line bg-surface px-4 py-2.5">
-          <p className="text-xs font-medium text-ink-muted">{current.caption}</p>
+
+        <div className="flex items-center justify-between gap-3 border-t border-line bg-surface px-3 py-2.5 sm:px-4 sm:py-3">
+          <p className="min-w-0 flex-1 text-xs font-medium leading-snug text-ink-muted sm:text-sm">
+            {current.caption}
+          </p>
+          {shots.length > 1 && (
+            <span className="shrink-0 font-mono text-[10px] tabular-nums text-ink-faint">
+              {String(active + 1).padStart(2, "0")}/{String(shots.length).padStart(2, "0")}
+            </span>
+          )}
         </div>
       </div>
 
       {shots.length > 1 && (
-        <div ref={stripRef} className="screenshot-strip mt-3 flex max-w-full gap-1.5 overflow-x-auto pb-1.5 pt-0.5">
+        <div className="mt-3 flex items-center justify-center gap-2">
           {shots.map((shot, i) => (
             <button
               key={shot.src}
               type="button"
-              onClick={() => scrollToThumb(i)}
+              onClick={() => goTo(i)}
               data-cursor="hover"
-              style={{ width: THUMB_WIDTH }}
-              className={`relative h-10 shrink-0 overflow-hidden rounded-md border transition-colors ${
-                i === active
-                  ? "border-brand bg-brand/5 ring-1 ring-brand/30"
-                  : "border-line bg-surface opacity-75 hover:opacity-100"
+              aria-label={`Go to screenshot ${i + 1}`}
+              aria-current={i === active ? "true" : undefined}
+              className={`h-2 min-w-[8px] rounded-full transition-all duration-300 ${
+                i === active ? "w-7 bg-brand" : "w-2 bg-line hover:bg-brand/40"
               }`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={shot.src} alt={shot.caption} className="h-full w-full object-contain object-top p-0.5" />
-            </button>
+            />
           ))}
         </div>
       )}
@@ -81,7 +157,7 @@ export default function ProjectPreview({ project }: { project: Project }) {
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="hover"
-          className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-brand-dark transition-colors hover:text-navy dark:hover:text-brand"
+          className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-brand-dark transition-colors hover:text-navy dark:text-brand dark:hover:text-brand-light sm:text-sm"
         >
           View live product
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

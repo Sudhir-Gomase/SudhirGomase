@@ -5,6 +5,17 @@ export interface ProjectScreenshot {
   caption: string;
 }
 
+export interface JourneyItem {
+  id: string;
+  period: string;
+  title: string;
+  organization: string;
+  location?: string;
+  description?: string;
+  highlights?: string[];
+  projects?: string[];
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -18,6 +29,7 @@ export interface Project {
   role: string;
   features: string[];
   liveUrl?: string;
+  githubUrl?: string;
   screenshots?: ProjectScreenshot[];
   frontend?: {
     stack: string[];
@@ -40,15 +52,32 @@ export const siteConfig = {
   location: "Mumbai, India",
   github: "https://github.com/SudhirGomase",
   linkedin: "https://linkedin.com/in/sudhir-gomase-95210b201",
-  resume: "/Resume.pdf",
+  /** Curriculum vitae PDF */
+  cv: "/Resume.pdf",
 };
 
 export const typingPhrases = [
-  "Node.js & Fastify at scale",
+  "Fastify APIs at scale",
   "Microservices on AWS",
   "SQL tuned to the millisecond",
   "Redis-backed performance",
 ];
+
+/** Single source of truth for the skills marquee — no duplicates across groups */
+export const techStackGroups = [
+  {
+    label: "Backend",
+    items: ["Node.js", "Fastify", "TypeScript", "REST APIs", "Microservices", "JWT Auth"],
+  },
+  {
+    label: "Data",
+    items: ["PostgreSQL", "MySQL", "Redis", "Prisma", "Knex.js", "BullMQ"],
+  },
+  {
+    label: "Cloud & Tools",
+    items: ["AWS", "Docker", "Swagger", "Git", "CI/CD"],
+  },
+] as const;
 
 export const aboutContent = {
   bio: "I'm a Backend Developer at WE-Matter in Mumbai, focused on building reliable APIs, microservices, and data-heavy platforms. I turn complex business logic into clean, scalable systems — from HR performance tools to enterprise survey analytics.",
@@ -59,6 +88,67 @@ export const aboutContent = {
     { value: "Mumbai", label: "Based in India · Open to remote" },
   ],
 };
+
+export const professionalJourney: JourneyItem[] = [
+  {
+    id: "we-matter",
+    period: "Jan 2024 – Present",
+    title: "Software Developer",
+    organization: "WE-Matter",
+    location: "Mumbai, India",
+    highlights: [
+      "Architected scalable backend system using Node.js, Fastify, and SQL",
+      "Improved API response time by 30% with Redis caching",
+      "Reduced runtime errors by 35% through optimization",
+      "Integrated enterprise HR systems including SAP SuccessFactors",
+      "Containerized and deployed services using Docker on AWS",
+    ],
+    projects: [
+      "Survey Management Portal",
+      "Agile Performance System (APS)",
+      "Analytics Dashboard Module",
+    ],
+  },
+  {
+    id: "tot-consulting",
+    period: "Jun 2023 – Dec 2023",
+    title: "Software Developer Intern",
+    organization: "TheOther 2 Thirds Consulting LLP",
+    location: "Mumbai, India",
+    highlights: [
+      "Developed backend functionality using PHP and SQL",
+      "Optimized backend code reducing application load time by 20%",
+      "Reduced production bugs by 20%",
+      "Maintained 95% adherence to coding best practices",
+    ],
+    projects: ["Custom Self-Survey Application"],
+  },
+];
+
+export const educationJourney: JourneyItem[] = [
+  {
+    id: "mca-spit",
+    period: "2021 – 2023",
+    title: "Master of Computer Applications (MCA)",
+    organization: "Sardar Patel Institute of Technology (SPIT)",
+    location: "Mumbai, India",
+    highlights: [
+      "Focus on software engineering, databases, and application development",
+      "Coursework in data structures, DBMS, operating systems, and cloud concepts",
+    ],
+  },
+  {
+    id: "bsc-it",
+    period: "2018 – 2021",
+    title: "Bachelor of Science — Information Technology",
+    organization: "Patkar College of Arts & Science · V.R. Varde College",
+    location: "Mumbai, India",
+    highlights: [
+      "Foundation in programming, networking, and information systems",
+      "Built early projects in web development and database-driven applications",
+    ],
+  },
+];
 
 export const pillars = [
   {
@@ -108,7 +198,7 @@ export const projects: Project[] = [
       "Full-stack performance management system for KPIs, goals, appraisals, and executive dashboards — serving CEO, CFO, CHRO, and operations leaders.",
     longDescription:
       "Built as part of WE-Matter's internal Agile Performance Management platform. APS connects goal tracking, employee appraisals, bell-curve rating, and role-based dashboards into a single multi-tenant system used across enterprise accounts.",
-    tags: ["Node.js", "Fastify", "Prisma", "React", "Redis", "BullMQ", "Swagger"],
+    tags: ["Enterprise HR", "Multi-tenant", "RBAC", "Executive dashboards"],
     highlight: true,
     featured: true,
     year: "Ongoing",
@@ -161,7 +251,7 @@ export const projects: Project[] = [
       "Enterprise survey platform supporting 360° feedback, kiosk mode, HRIS mapping, scorecards, and automated email scheduling — built on Fastify with React.",
     longDescription:
       "Evolved from a PHP-based survey tool into a modern Fastify + React platform. Handles survey creation, recipient mapping, multi-language support, analytics exports, and super-admin multi-company management.",
-    tags: ["Fastify", "React", "MySQL", "Redis", "BullMQ", "Knex.js", "TypeScript"],
+    tags: ["360° Feedback", "Kiosk mode", "HRIS mapping", "Multi-language"],
     highlight: true,
     featured: true,
     year: "Ongoing",
@@ -195,7 +285,7 @@ export const projects: Project[] = [
       ],
     },
     backend: {
-      stack: ["Fastify", "Knex.js", "MySQL", "Redis", "BullMQ", "Bull Board"],
+      stack: ["Node.js", "Fastify", "Knex.js", "MySQL", "Redis", "BullMQ", "Bull Board"],
       modules: [
         "Survey service — 16K+ lines of business logic",
         "Account & user management APIs",
@@ -214,7 +304,7 @@ export const projects: Project[] = [
       "Full-stack analytics dashboard for survey insights — trend lines, predictive analysis, heat maps, open-ended NLP, and driver diagnostics with real-time engagement scoring.",
     longDescription:
       "Built as part of WE-Matter's survey analytics suite. Delivers executive-ready dashboards with multi-filter demographics, predictive performance & attrition models, diagnostic scatter plots, and exportable heat map reports — powered by optimized Knex.js queries.",
-    tags: ["Node.js", "Fastify", "Knex.js", "React", "MySQL", "Chart.js"],
+    tags: ["Engagement scoring", "Predictive analytics", "Heat maps", "NLP insights"],
     highlight: true,
     featured: true,
     year: "Ongoing",
@@ -255,6 +345,71 @@ export const projects: Project[] = [
         "Heat map & driver analysis endpoints",
         "Open-ended text aggregation & export",
       ],
+    },
+  },
+];
+
+export const personalProjects: Project[] = [
+  {
+    id: "secure-file-sharing",
+    title: "Securing And Sharing Files",
+    subtitle: "Encrypted file transfer & management web app",
+    description:
+      "Web application for secure file transfer — addressing hacking risks, transmission delays, and data corruption during sharing.",
+    longDescription:
+      "Built utilities for encryption, decryption, split & join (large files), and file comparison. Uses RSA public/private key cryptography so encrypted data stays protected even if intercepted in transit.",
+    tags: ["RSA encryption", "File security", "Split & join", "Java web app"],
+    highlight: false,
+    featured: false,
+    year: "Oct 2020 – Feb 2021",
+    role: "Academic project",
+    githubUrl: "https://github.com/SudhirGomase",
+    preview: "default",
+    features: [
+      "Encrypt and decrypt text files with RSA algorithm",
+      "Send secured files via registered email accounts",
+      "Split and merge large text files for easier transfer",
+      "Compare files to verify integrity after transfer",
+      "JSP + Bootstrap UI on Apache Tomcat 7.0",
+    ],
+    frontend: {
+      stack: ["JSP", "Bootstrap", "HTML"],
+      modules: ["File upload & encryption UI", "Split / join workflows", "Email registration flow"],
+    },
+    backend: {
+      stack: ["Java", "MySQL", "Apache Tomcat 7.0"],
+      modules: ["RSA encryption engine", "File split & merge logic", "File comparison module"],
+    },
+  },
+  {
+    id: "blog-maker",
+    title: "Blog Maker",
+    subtitle: "Online blogging platform for personal & brand presence",
+    description:
+      "Platform for users to create blogs, share expertise, and build an online presence with personal stories and high-quality content.",
+    longDescription:
+      "Designed for individuals and businesses to publish articles, increase brand visibility, and build reader loyalty — supporting the shift from print journals to online publishing.",
+    tags: ["Blogging", "Content platform", "Java EE", "MySQL"],
+    highlight: false,
+    featured: false,
+    year: "Sep 2021 – Oct 2021",
+    role: "Academic project",
+    githubUrl: "https://github.com/SudhirGomase",
+    preview: "default",
+    features: [
+      "Create and publish blog posts with rich content",
+      "User accounts for authors and readers",
+      "Bootstrap-based responsive front-end",
+      "MySQL-backed content storage",
+      "Deployed on GlassFish application server",
+    ],
+    frontend: {
+      stack: ["HTML", "Bootstrap", "CSS"],
+      modules: ["Blog editor & listing pages", "Author profile views", "Responsive layout"],
+    },
+    backend: {
+      stack: ["Java", "MySQL", "GlassFish Server"],
+      modules: ["Post & user management", "Authentication", "Content persistence layer"],
     },
   },
 ];

@@ -16,11 +16,11 @@ interface MagneticButtonProps {
 
 const variantStyles = {
   primary:
-    "bg-navy text-white border-navy hover:bg-navy-dark shadow-soft hover:shadow-elevated",
+    "bg-ink-heading text-canvas border-ink-heading hover:bg-navy-dark shadow-soft hover:shadow-glow dark:bg-brand dark:text-navy-dark dark:hover:bg-brand-light",
   secondary:
-    "bg-surface text-navy border-line hover:border-brand/40 hover:shadow-glow",
+    "bg-surface/80 text-ink-heading border-line backdrop-blur-sm hover:border-brand/45 hover:shadow-glow",
   ghost:
-    "bg-transparent text-ink-muted border-line hover:text-ink-heading hover:bg-surface hover:border-ink-faint/30",
+    "bg-transparent text-ink-muted border-line/80 hover:text-ink-heading hover:bg-surface/60 hover:border-brand/30",
 };
 
 export default function MagneticButton({
@@ -53,7 +53,7 @@ export default function MagneticButton({
     whileTap: { scale: 0.98 },
     transition: { type: "spring" as const, stiffness: 400, damping: 28 },
     className: cn(
-      "inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3 text-sm font-medium transition-colors duration-300",
+      "inline-flex items-center justify-center gap-2 rounded-full border px-7 py-3.5 text-sm font-semibold tracking-wide transition-colors duration-300",
       variantStyles[variant],
       disabled && "pointer-events-none opacity-50",
       className

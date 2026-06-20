@@ -4,8 +4,9 @@ import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import FeaturedProjects from "@/components/projects/FeaturedProjects";
+import PersonalProjects from "@/components/projects/PersonalProjects";
 import { gsap, registerGsapPlugins } from "@/lib/gsap";
-import { projects } from "@/lib/data";
+import { personalProjects, projects } from "@/lib/data";
 
 export default function ProjectsSection() {
   const ref = useRef<HTMLElement>(null);
@@ -37,17 +38,26 @@ export default function ProjectsSection() {
   );
 
   return (
-    <section id="projects" ref={ref} className="py-20 md:py-28 md:pr-[38%] lg:pr-[36%]">
+    <section id="projects" ref={ref} className="py-20 md:py-28">
       <div className="section-wrap">
         <div className="section-header-wrap">
           <SectionHeader
-            index="03 — Work"
+            index="04 — Work"
             title="Selected projects"
             description="Enterprise systems built at WE-Matter — real products, real architecture."
             className="section-reveal invisible"
           />
         </div>
         <FeaturedProjects featured={projects.filter((p) => p.featured)} />
+
+        <div className="section-reveal invisible mt-16 border-t border-line pt-14 md:mt-20 md:pt-16">
+          <SectionHeader
+            index="Personal"
+            title="Personal projects"
+            description="Academic builds from my B.Sc. and MCA — security, Java web apps, and early full-stack foundations."
+          />
+          <PersonalProjects projects={personalProjects} />
+        </div>
       </div>
     </section>
   );
