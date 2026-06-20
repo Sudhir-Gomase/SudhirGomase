@@ -21,7 +21,7 @@ Production-ready Next.js 15 portfolio with scroll-driven 3D avatar, GSAP animati
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/SudhirGomase/Sudhir-Portfolio-2.git
+git clone https://github.com/Sudhir-Gomase/Sudhir-Portfolio-2.git
 cd Sudhir-Portfolio-2
 
 # 2. Install dependencies
