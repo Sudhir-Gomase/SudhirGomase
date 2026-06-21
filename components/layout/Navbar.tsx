@@ -35,16 +35,16 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        <nav className="section-wrap flex h-[var(--nav-h)] items-center justify-between gap-4 sm:gap-6">
+        <nav className="section-wrap grid h-[var(--nav-h)] w-full grid-cols-[1fr_auto] items-center gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-6">
           <Link
             href="/"
-            className="shrink-0 font-display text-[1.1rem] font-semibold tracking-tight md:text-[1.2rem]"
+            className="min-w-0 shrink-0 justify-self-start font-display text-[1.05rem] font-semibold leading-none tracking-tight sm:text-[1.1rem] md:text-[1.2rem]"
           >
             <span className="text-ink-heading">Sudhir </span>
             <span className="text-brand-dark dark:text-brand">Gomase</span>
           </Link>
 
-          <ul className="hidden items-center gap-8 md:flex">
+          <ul className="hidden items-center justify-center gap-6 lg:gap-8 md:flex md:justify-self-center">
             {sectionLinks.map((link) => (
               <li key={link.href}>
                 <a
@@ -58,8 +58,8 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <div className="hidden items-center gap-3 md:flex">
-            <a
+          <div className="hidden items-center justify-self-end gap-3 md:flex">
+            {/* <a
               href={siteConfig.cv}
               download
               data-cursor="hover"
@@ -69,14 +69,14 @@ export default function Navbar() {
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               CV
-            </a>
+            </a> */}
 
-            <a
+            {/* <a
               href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
               className="hidden text-[12px] font-medium text-ink-muted transition-colors hover:text-brand-dark lg:inline dark:hover:text-brand"
             >
               8108320614
-            </a>
+            </a> */}
 
             <ThemeToggle />
 
@@ -89,7 +89,7 @@ export default function Navbar() {
             </a>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center justify-self-end gap-2 md:hidden">
             <ThemeToggle />
             <button
               type="button"
@@ -109,9 +109,9 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="fixed inset-x-0 top-[var(--nav-h)] z-[49] border-b border-line bg-surface px-5 py-5 shadow-elevated backdrop-blur-xl dark:bg-[#0c0e16] md:hidden"
+            className="fixed inset-x-0 top-[var(--nav-h)] z-[49] border-b border-line bg-surface shadow-elevated backdrop-blur-xl dark:bg-[#0c0e16] md:hidden"
           >
-            <div className="section-wrap flex flex-col gap-4">
+            <div className="section-wrap flex flex-col gap-4 py-5">
               {sectionLinks.map((link) => (
                 <a
                   key={link.href}

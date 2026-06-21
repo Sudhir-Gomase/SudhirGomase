@@ -205,8 +205,9 @@
 }
 
 @layer components {
-  .section-wrap {
-    @apply mx-auto w-full max-w-[1140px] px-4 sm:px-5 md:px-8;
+  .section-wrap,
+  .hero-wrap {
+    @apply mx-auto w-full max-w-[1280px] px-4 sm:px-5 md:px-8 lg:px-10;
   }
 
   /** Consistent vertical rhythm between page sections */
@@ -216,10 +217,6 @@
 
   .section-pad-sm {
     @apply py-10 md:py-12;
-  }
-
-  .hero-wrap {
-    @apply mx-auto w-full max-w-[1280px] px-4 sm:px-5 md:px-8 lg:px-10;
   }
 
   .character-companion-inner {
@@ -496,6 +493,15 @@
     color: transparent;
   }
 
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   .marquee-mask {
     mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
   }
@@ -509,6 +515,10 @@
   .marquee-track {
     animation: marquee 35s linear infinite;
     will-change: transform;
+  }
+
+  .group\/skills:hover .marquee-track {
+    animation-play-state: paused;
   }
 
   .marquee-reverse {

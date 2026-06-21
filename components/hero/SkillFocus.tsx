@@ -9,16 +9,9 @@ const uniqueSkills = [...new Set(techStackGroups.flatMap((g) => g.items))];
 const rowA = uniqueSkills.filter((_, i) => i % 2 === 0);
 const rowB = uniqueSkills.filter((_, i) => i % 2 === 1);
 
-function SkillPill({ skill, size = "md" }: { skill: string; size?: "sm" | "md" }) {
+function SkillPill({ skill }: { skill: string }) {
   return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 items-center rounded-full border border-line bg-surface/90 font-medium text-ink-muted shadow-soft backdrop-blur-sm",
-        size === "sm"
-          ? "px-3 py-1.5 text-xs"
-          : "px-4 py-2 text-sm transition-all duration-300 hover:border-brand/35 hover:text-ink-heading md:px-5"
-      )}
-    >
+    <span className="inline-flex shrink-0 items-center rounded-full border border-line bg-surface/90 px-4 py-2 text-sm font-medium text-ink-muted shadow-soft backdrop-blur-sm transition-colors hover:border-brand/35 hover:text-ink-heading md:px-5">
       {skill}
     </span>
   );
@@ -31,36 +24,12 @@ function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boo
     <div className="marquee-mask overflow-hidden py-2">
       <div
         className={cn(
-          "marquee-track flex w-max gap-3",
+          "marquee-track flex w-max flex-nowrap gap-3 md:gap-4",
           reverse && "marquee-reverse"
         )}
-        aria-hidden
       >
         {loop.map((skill, i) => (
           <SkillPill key={`${skill}-${i}`} skill={skill} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MobileSkillGrid() {
-  return (
-    <div className="md:hidden">
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {techStackGroups.map((group) => (
-          <span
-            key={group.label}
-            className="shrink-0 rounded-full border border-line bg-surface/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint"
-          >
-            {group.label}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap justify-center gap-2 sm:gap-2.5">
-        {uniqueSkills.map((skill) => (
-          <SkillPill key={skill} skill={skill} size="sm" />
         ))}
       </div>
     </div>
@@ -106,14 +75,14 @@ export default function SkillFocus() {
       <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-brand/[0.03] to-transparent" aria-hidden />
 
       <div className="section-wrap">
-        <div className="skills-reveal invisible mb-5 flex flex-col gap-3 md:mb-8 md:flex-row md:items-end md:justify-between md:gap-4">
+        <div className="skills-reveal invisible mb-5 flex flex-col gap-3 md:mb-6 md:flex-row md:items-end md:justify-between md:gap-4">
           <div className="min-w-0">
             <p className="label-caps mb-2">Stack</p>
             <h2 className="font-display text-[1.35rem] leading-tight text-ink-heading sm:text-2xl md:text-display-lg">
               Technologies I work with
             </h2>
           </div>
-          <div className="hidden shrink-0 flex-wrap gap-2 md:flex">
+          <div className="flex shrink-0 flex-wrap gap-2">
             {techStackGroups.map((group) => (
               <span
                 key={group.label}
@@ -125,16 +94,12 @@ export default function SkillFocus() {
           </div>
         </div>
 
-        {/* Mobile — static wrapped grid (no marquee) */}
-        <div className="skills-reveal invisible rounded-2xl border border-line/80 bg-surface/40 p-4 backdrop-blur-sm md:hidden">
-          <MobileSkillGrid />
-        </div>
-
-        {/* Desktop — dual marquee */}
-        <div className="skills-reveal invisible hidden space-y-1 rounded-2xl border border-line/80 bg-surface/40 p-3 backdrop-blur-sm md:block md:p-4">
-          <MarqueeRow items={rowA.length ? rowA : uniqueSkills} />
-          <div className="mx-auto h-px w-[92%] bg-line" aria-hidden />
-          <MarqueeRow items={rowB.length ? rowB : rowA} reverse />
+        <div className="skills-reveal invisible overflow-hidden rounded-2xl border border-line/80 bg-surface/40 p-3 backdrop-blur-sm md:p-4">
+          <div className="group/skills space-y-1">
+            <MarqueeRow items={rowA.length ? rowA : uniqueSkills} />
+            <div className="mx-auto h-px w-[92%] bg-line" aria-hidden />
+            <MarqueeRow items={rowB.length ? rowB : rowA} reverse />
+          </div>
         </div>
 
         <ul className="sr-only">

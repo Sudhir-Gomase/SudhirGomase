@@ -162,8 +162,8 @@ export default function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
           <p className="text-center text-xs text-white/40 sm:text-left">
             © {year} {siteConfig.name}. All rights reserved.
-            <span className="mx-2 hidden sm:inline">·</span>
-            <span className="mt-1 block sm:mt-0 sm:inline">Built with Next.js & TypeScript</span>
+            <span className="mx-2 hidden sm:inline"></span>
+            <span className="mt-1 block sm:mt-0 sm:inline"></span>
           </p>
           <a
             href="#hero"

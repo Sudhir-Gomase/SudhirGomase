@@ -303,7 +303,7 @@ export default function Journey() {
 
         {/* Mobile / tablet — horizontal scroll */}
         <div ref={mobileRailRef} className="relative lg:hidden">
-          <div className="journey-horizontal -mx-4 flex items-start overflow-x-auto px-4 pb-3 pt-1 sm:-mx-5 sm:px-5">
+          <div className="journey-horizontal flex items-start overflow-x-auto pb-3 pt-1 lg:hidden">
             {journeyPath.map((item, index) => (
               <div key={item.id} className="flex shrink-0 items-start">
                 {index > 0 && <MobileConnector />}

@@ -102,15 +102,43 @@ export const typingPhrases = [
 export const techStackGroups = [
   {
     label: "Backend",
-    items: ["Node.js", "Fastify", "TypeScript", "REST APIs", "Microservices", "JWT Auth"],
+    items: [
+      "Node.js",
+      "Fastify",
+      "TypeScript",
+      "REST APIs",
+      "Microservices",
+      "JWT Auth",
+      "RBAC",
+      "WebSockets",
+    ],
   },
   {
     label: "Data",
-    items: ["PostgreSQL", "MySQL", "Redis", "Prisma", "Knex.js", "BullMQ"],
+    items: [
+      "PostgreSQL",
+      "MySQL",
+      "Redis",
+      "Prisma",
+      "Knex.js",
+      "BullMQ",
+      "Database Design",
+      "Query Optimization",
+    ],
   },
   {
     label: "Cloud & Tools",
-    items: ["AWS", "Docker", "Swagger", "Git", "CI/CD"],
+    items: [
+      "AWS",
+      "Docker",
+      "Swagger",
+      "Git",
+      "CI/CD",
+      "Linux",
+      "Postman",
+      "SendGrid",
+      "GitHub Actions",
+    ],
   },
 ] as const;
 

@@ -77,7 +77,7 @@ export default function Hero() {
     <section ref={ref} id="hero" className="relative overflow-x-hidden bg-canvas bg-hero-mesh">
       <div className="pointer-events-none absolute -left-40 top-16 h-[200px] w-[200px] rounded-full bg-brand/8 blur-[80px] sm:h-[320px] sm:w-[320px] sm:blur-[100px] md:h-[380px] md:w-[380px]" />
 
-      <div className="hero-wrap relative z-10 min-h-[100svh] pt-[var(--nav-h)] pb-4 sm:pb-6 md:pb-8">
+      <div className="section-wrap relative z-10 min-h-[100svh] pt-[var(--nav-h)] pb-4 sm:pb-6 md:pb-8">
         <div className="grid min-h-[calc(100svh-var(--nav-h))] grid-cols-1 items-center gap-6 md:grid-cols-12 md:gap-8 lg:gap-10">
           <div className="hero-content relative z-20 md:col-span-6 lg:col-span-6 xl:col-span-5">
             <h1 className="font-display text-display-hero font-semibold text-ink-heading" aria-label={siteConfig.name}>
