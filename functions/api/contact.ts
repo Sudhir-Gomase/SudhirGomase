@@ -1,5 +1,5 @@
 import {
-  getSmtpConfigError,
+  getContactConfigError,
   sendContactEmail,
   validateContactPayload,
   type ContactEnv,
@@ -36,7 +36,7 @@ export const onRequestPost = async (context: PagesContext) => {
       return json({ error: payload.error }, 400);
     }
 
-    const configError = getSmtpConfigError(context.env);
+    const configError = getContactConfigError(context.env);
     if (configError) {
       console.error("[contact]", configError);
       return json({ error: configError }, 503);
