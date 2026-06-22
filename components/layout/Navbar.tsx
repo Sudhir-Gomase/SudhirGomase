@@ -70,8 +70,8 @@ export default function Navbar() {
               </svg>
               CV
             </a> */}
-            
 
+ 
             {/* <a
               href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
               className="hidden text-[12px] font-medium text-ink-muted transition-colors hover:text-brand-dark lg:inline dark:hover:text-brand"
