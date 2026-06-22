@@ -70,6 +70,7 @@ export default function Navbar() {
               </svg>
               CV
             </a> */}
+            
 
             {/* <a
               href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
