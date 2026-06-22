@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 /** Dev uses `.next-dev` to avoid Windows EPERM locks on `.next/trace` after production builds */
 const nextConfig: NextConfig = {
@@ -7,3 +8,5 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+initOpenNextCloudflareForDev();
