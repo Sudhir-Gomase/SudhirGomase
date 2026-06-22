@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sudhirgomase.dev";
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sudhirgomase.pages.dev";
 
   return {
     rules: { userAgent: "*", allow: "/" },
